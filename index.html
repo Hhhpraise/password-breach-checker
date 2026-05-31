@@ -1,941 +1,796 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Password Breach Checker | SecurePass Suite</title>
-
-    <!-- Favicons -->
-    <link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2U1M2UzZSI+PHBhdGggZD0iTTEyIDJDNi40OCAyIDIgNi40OCAyIDEyczQuNDggMTAgMTAgMTAgMTAtNC40OCAxMC0xMFMxNy41MiAyIDEyIDJ6bS0yIDE1bC01LTUgMS40MS0xLjQxTDEwIDEzLjE3bDcuNTktNy41OUwxOSA3bC05IDEweiIvPjwvc3ZnPg==">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2U1M2UzZSI+PHBhdGggZD0iTTEyIDJDNi40OCAyIDIgNi40OCAyIDEyczQuNDggMTAgMTAgMTAgMTAtNC40OCAxMC0xMFMxNy41MiAyIDEyIDJ6bS0yIDE1bC01LTUgMS40MS0xLjQxTDEwIDEzLjE3bDcuNTktNy41OUwxOSA3bC05IDEweiIvPjwvc3ZnPg==">
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
-            -ms-touch-action: manipulation;
-        }
-
-        html {
-            -webkit-text-size-adjust: 100%;
-            -ms-text-size-adjust: 100%;
-            touch-action: manipulation;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            min-height: 100vh;
-            padding: max(20px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(20px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overscroll-behavior: none;
-            -webkit-overflow-scrolling: touch;
-            -webkit-user-select: none;
-            user-select: none;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 500px;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            touch-action: manipulation;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        h1 {
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .subtitle {
-            color: #666;
-            font-size: 16px;
-            line-height: 1.4;
-        }
-
-        .securepass-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 14px;
-            margin-top: 10px;
-            padding: 8px 16px;
-            background: rgba(102, 126, 234, 0.1);
-            border-radius: 20px;
-            transition: all 0.2s;
-            touch-action: manipulation;
-        }
-
-        .securepass-link:hover, .securepass-link:active {
-            background: rgba(102, 126, 234, 0.2);
-            transform: translateY(-1px);
-        }
-
-        .input-group {
-            position: relative;
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #555;
-            font-weight: 500;
-        }
-
-        input[type="password"], input[type="text"] {
-            width: 100%;
-            padding: 15px 50px 15px 15px;
-            border: 2px solid #e1e1e1;
-            border-radius: 12px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            background: white;
-            -webkit-user-select: text;
-            user-select: text;
-            font-family: 'Monaco', 'Consolas', monospace;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .toggle-password {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 18px;
-            color: #666;
-            touch-action: manipulation;
-            padding: 5px;
-        }
-
-        .check-btn {
-            width: 100%;
-            padding: 18px;
-            background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            margin-bottom: 20px;
-            touch-action: manipulation;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .check-btn:active {
-            transform: scale(0.98);
-        }
-
-        .check-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .result {
-            margin-top: 20px;
-            padding: 20px;
-            border-radius: 12px;
-            display: none;
-            animation: slideIn 0.3s ease;
-        }
-
-        .result.show {
-            display: block;
-        }
-
-        .result.safe {
-            background: rgba(72, 187, 120, 0.1);
-            border: 2px solid rgba(72, 187, 120, 0.3);
-            color: #2f855a;
-        }
-
-        .result.low-risk {
-            background: rgba(251, 211, 141, 0.2);
-            border: 2px solid rgba(251, 211, 141, 0.5);
-            color: #b7791f;
-        }
-
-        .result.medium-risk {
-            background: rgba(229, 62, 62, 0.1);
-            border: 2px solid rgba(229, 62, 62, 0.3);
-            color: #c53030;
-        }
-
-        .result.high-risk {
-            background: rgba(229, 62, 62, 0.15);
-            border: 2px solid rgba(229, 62, 62, 0.4);
-            color: #9c2c2c;
-        }
-
-        .result-message {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .result-education {
-            font-size: 14px;
-            line-height: 1.5;
-            opacity: 0.9;
-        }
-
-        .loading {
-            text-align: center;
-            color: #666;
-            margin-top: 20px;
-            display: none;
-            padding: 20px;
-        }
-
-        .loading.show {
-            display: block;
-        }
-
-        .privacy-note {
-            background: rgba(102, 126, 234, 0.1);
-            border: 2px solid rgba(102, 126, 234, 0.2);
-            color: #4c51bf;
-            padding: 15px;
-            border-radius: 12px;
-            margin: 20px 0;
-            font-size: 14px;
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-        }
-
-        .education-section {
-            margin-top: 30px;
-            background: rgba(255, 255, 255, 0.7);
-            border-radius: 12px;
-            padding: 20px;
-        }
-
-        .education-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 15px;
-            color: #333;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .education-item {
-            margin-bottom: 15px;
-            padding: 15px;
-            background: white;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: 1px solid #e2e8f0;
-        }
-
-        .education-item:hover, .education-item:active {
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            transform: translateY(-1px);
-        }
-
-        .education-item h4 {
-            color: #e53e3e;
-            margin-bottom: 8px;
-            font-size: 16px;
-        }
-
-        .education-item p {
-            color: #666;
-            font-size: 14px;
-            line-height: 1.4;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .stat-item {
-            text-align: center;
-            padding: 15px;
-            background: white;
-            border-radius: 8px;
-            border: 1px solid #e2e8f0;
-        }
-
-        .stat-number {
-            font-size: 24px;
-            font-weight: bold;
-            color: #e53e3e;
-        }
-
-        .stat-label {
-            font-size: 12px;
-            color: #666;
-            margin-top: 5px;
-        }
-
-        .action-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .secondary-btn {
-            padding: 12px;
-            background: rgba(102, 126, 234, 0.1);
-            color: #667eea;
-            border: 2px solid #667eea;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            text-align: center;
-            transition: all 0.2s ease;
-            touch-action: manipulation;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .secondary-btn:active {
-            background: rgba(102, 126, 234, 0.2);
-            transform: scale(0.98);
-        }
-
-        .clear-btn {
-            background: rgba(229, 62, 62, 0.1);
-            color: #e53e3e;
-            border-color: #e53e3e;
-        }
-
-        .clear-btn:active {
-            background: rgba(229, 62, 62, 0.2);
-        }
-
-        /* Add to Home Screen Banner */
-        #addToHomeBanner {
-            display: none;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(0, 0, 0, 0.95);
-            color: white;
-            padding: 20px 15px;
-            text-align: center;
-            z-index: 2000;
-            animation: slideUp 0.5s ease;
-            border-top: 2px solid #e53e3e;
-        }
-
-        #addToHomeBanner .banner-content {
-            max-width: 350px;
-            margin: 0 auto;
-        }
-
-        #addToHomeBanner h3 {
-            margin: 0 0 10px 0;
-            font-size: 18px;
-            color: #e53e3e;
-        }
-
-        #addToHomeBanner p {
-            margin-bottom: 15px;
-            font-size: 14px;
-            line-height: 1.4;
-            opacity: 0.9;
-        }
-
-        #addToHomeBanner .banner-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-        }
-
-        #addToHomeBanner button {
-            background: #e53e3e;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 25px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background 0.3s;
-            touch-action: manipulation;
-        }
-
-        #addToHomeBanner button:hover {
-            background: #c53030;
-        }
-
-        #addToHomeBanner .dismiss-btn {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-        }
-
-        #addToHomeBanner .dismiss-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        .ios-instructions {
-            display: none;
-            margin-top: 15px;
-            padding: 15px;
-            background: rgba(229, 62, 62, 0.1);
-            border-radius: 10px;
-            text-align: left;
-            font-size: 13px;
-            line-height: 1.5;
-        }
-
-        .ios-instructions.show {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .ios-instructions ol {
-            margin: 10px 0;
-            padding-left: 20px;
-        }
-
-        .ios-instructions li {
-            margin-bottom: 8px;
-        }
-
-        .share-icon {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            background: #007AFF;
-            border-radius: 3px;
-            position: relative;
-            margin: 0 5px;
-        }
-
-        .share-icon::before {
-            content: "⬆";
-            position: absolute;
-            top: -2px;
-            left: 2px;
-            color: white;
-            font-size: 12px;
-        }
-
-        /* Safari-specific adjustments */
-        @supports (-webkit-touch-callout: none) {
-            body {
-                padding: max(20px, constant(safe-area-inset-top)) max(20px, constant(safe-area-inset-right)) max(20px, constant(safe-area-inset-bottom)) max(20px, constant(safe-area-inset-left));
-            }
-        }
-
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
-        .pulse {
-            animation: pulse 0.3s ease;
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 20px;
-                margin: 10px;
-            }
-
-            h1 {
-                font-size: 20px;
-            }
-
-            .action-buttons {
-                grid-template-columns: 1fr;
-            }
-
-            .stats {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#FBFBF9">
+  <meta name="description" content="Check if your password has appeared in known data breaches. Private, client-side checking using k-anonymity.">
+
+  <title>Breach Check | SecurePass</title>
+
+  <!-- Phosphor Icons -->
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/+esm"></script>
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'><rect width='256' height='256' fill='none'/><path fill='%23D94848' d='M128 24a104 104 0 1 0 104 104A104.11 104.11 0 0 0 128 24Zm-8 56a8 8 0 0 1 16 0v56a8 8 0 0 1-16 0Zm8 104a12 12 0 1 1 12-12a12 12 0 0 1-12 12Z'/></svg>">
+
+  <style>
+    /* ── Design Tokens ───────────────────────────────── */
+    :root {
+      --color-bg:            #FBFBF9;
+      --color-bg-alt:        #F5F5F0;
+      --color-bg-hover:      #EEEEE8;
+      --color-surface:       #FFFFFF;
+      --color-border:        #E5E5E0;
+      --color-border-hover:  #D4D4CC;
+      --color-border-focus:  #B0B0A8;
+
+      --color-text:          #1A1A1A;
+      --color-text-secondary:#6B6B65;
+      --color-text-tertiary: #9B9B94;
+      --color-text-inverse:  #FFFFFF;
+
+      --color-accent:        #D94848;
+      --color-accent-hover:  #C53030;
+      --color-accent-bg:     #FBEDED;
+      --color-success:       #3B8C5C;
+      --color-success-bg:    #EDF7F1;
+      --color-warning:       #D9A43A;
+      --color-warning-bg:    #FBF4E4;
+
+      --font-sans:           'Geist Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-mono:           'Geist Mono', 'SF Mono', 'Menlo', 'Consolas', monospace;
+
+      --space-1:  4px;
+      --space-2:  8px;
+      --space-3:  12px;
+      --space-4:  16px;
+      --space-5:  20px;
+      --space-6:  24px;
+      --space-8:  32px;
+      --space-10: 40px;
+
+      --radius-sm:  4px;
+      --radius-md:  6px;
+      --radius-lg:  10px;
+
+      --shadow-sm:  0 1px 2px rgba(0,0,0,0.04);
+      --shadow-md:  0 2px 8px rgba(0,0,0,0.06);
+      --shadow-lg:  0 8px 24px rgba(0,0,0,0.08);
+
+      --max-width:  440px;
+
+      --transition-fast: 120ms ease;
+      --transition-base: 200ms ease;
+    }
+
+    /* ── Fonts ──────────────────────────────────────── */
+    @font-face {
+      font-family: 'Geist Sans';
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: url(https://cdn.jsdelivr.net/npm/@fontsource/geist-sans@5.0.0/files/geist-sans-latin-400-normal.woff2) format('woff2');
+    }
+    @font-face {
+      font-family: 'Geist Sans';
+      font-style: normal;
+      font-weight: 500;
+      font-display: swap;
+      src: url(https://cdn.jsdelivr.net/npm/@fontsource/geist-sans@5.0.0/files/geist-sans-latin-500-normal.woff2) format('woff2');
+    }
+    @font-face {
+      font-family: 'Geist Sans';
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+      src: url(https://cdn.jsdelivr.net/npm/@fontsource/geist-sans@5.0.0/files/geist-sans-latin-600-normal.woff2) format('woff2');
+    }
+    @font-face {
+      font-family: 'Geist Mono';
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: url(https://cdn.jsdelivr.net/npm/@fontsource/geist-mono@5.0.0/files/geist-mono-latin-400-normal.woff2) format('woff2');
+    }
+    @font-face {
+      font-family: 'Geist Mono';
+      font-style: normal;
+      font-weight: 500;
+      font-display: swap;
+      src: url(https://cdn.jsdelivr.net/npm/@fontsource/geist-mono@5.0.0/files/geist-mono-latin-500-normal.woff2) format('woff2');
+    }
+
+    /* ── Reset ──────────────────────────────────────── */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html {
+      -webkit-text-size-adjust: 100%;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      font-size: 15px;
+      font-weight: 400;
+      line-height: 1.55;
+      color: var(--color-text);
+      background: var(--color-bg);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: var(--space-10) var(--space-4) var(--space-16);
+    }
+
+    /* ── Container ──────────────────────────────────── */
+    .container {
+      width: 100%;
+      max-width: var(--max-width);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    /* ── Header ─────────────────────────────────────── */
+    .header {
+      padding: var(--space-6) var(--space-6) 0;
+    }
+
+    .header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-2);
+    }
+
+    .header h1 {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+      color: var(--color-text);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .header h1 .ph {
+      font-size: 20px;
+      color: var(--color-accent);
+    }
+
+    .generator-link {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--color-text-secondary);
+      text-decoration: none;
+      padding: var(--space-1) var(--space-3);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      transition: all var(--transition-fast);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .generator-link:hover {
+      background: var(--color-bg-hover);
+      border-color: var(--color-border-hover);
+      color: var(--color-text);
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      line-height: 1.5;
+    }
+
+    /* ── Body ───────────────────────────────────────── */
+    .body-content {
+      padding: var(--space-6);
+    }
+
+    /* ── Input ──────────────────────────────────────── */
+    .input-wrap {
+      position: relative;
+      margin-bottom: var(--space-4);
+    }
+
+    .input-wrap input {
+      width: 100%;
+      padding: var(--space-3) var(--space-10) var(--space-3) var(--space-4);
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      font-family: var(--font-mono);
+      font-size: 14px;
+      color: var(--color-text);
+      outline: none;
+      transition: border-color var(--transition-fast), background var(--transition-fast);
+    }
+
+    .input-wrap input:focus {
+      border-color: var(--color-border-focus);
+      background: var(--color-surface);
+    }
+
+    .input-wrap input::placeholder {
+      color: var(--color-text-tertiary);
+      font-family: var(--font-sans);
+      font-size: 13px;
+    }
+
+    .toggle-vis {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--color-text-tertiary);
+      cursor: pointer;
+      font-size: 16px;
+      padding: 4px;
+      transition: color var(--transition-fast);
+    }
+
+    .toggle-vis:hover {
+      color: var(--color-text-secondary);
+    }
+
+    /* ── Check button ───────────────────────────────── */
+    .check-btn {
+      width: 100%;
+      padding: var(--space-3) var(--space-4);
+      background: var(--color-text);
+      color: var(--color-text-inverse);
+      border: none;
+      border-radius: var(--radius-md);
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      transition: background var(--transition-fast), transform var(--transition-fast);
+      letter-spacing: -0.2px;
+    }
+
+    .check-btn:hover { background: #333; }
+    .check-btn:active { transform: scale(0.985); }
+    .check-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    /* ── Loading ────────────────────────────────────── */
+    .loading {
+      display: none;
+      text-align: center;
+      padding: var(--space-6);
+      color: var(--color-text-secondary);
+      font-size: 13px;
+    }
+
+    .loading.show { display: block; }
+
+    .spinner {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      border: 2px solid var(--color-border);
+      border-top-color: var(--color-text);
+      border-radius: 50%;
+      animation: spin 600ms linear infinite;
+      margin-bottom: var(--space-3);
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Result ─────────────────────────────────────── */
+    .result {
+      display: none;
+      margin-top: var(--space-4);
+      padding: var(--space-4);
+      border-radius: var(--radius-md);
+      animation: fadeSlideIn 250ms ease;
+    }
+
+    .result.show { display: block; }
+
+    .result.safe  { background: var(--color-success-bg); border: 1px solid #C5E5D1; }
+    .result.low   { background: var(--color-warning-bg); border: 1px solid #EED89A; }
+    .result.medium{ background: #FEF0F0;                 border: 1px solid #F5C6C6; }
+    .result.high  { background: var(--color-accent-bg);  border: 1px solid #F0B8B8; }
+
+    .result .status {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: var(--space-2);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      letter-spacing: -0.2px;
+    }
+
+    .result.safe .status   { color: var(--color-success); }
+    .result.low .status    { color: #8B6D1F; }
+    .result.medium .status { color: #B54545; }
+    .result.high .status   { color: var(--color-accent); }
+
+    .result .detail {
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      line-height: 1.55;
+    }
+
+    .result .meta {
+      display: flex;
+      gap: var(--space-4);
+      margin-top: var(--space-3);
+      padding-top: var(--space-3);
+      border-top: 1px solid rgba(0,0,0,0.06);
+      font-size: 12px;
+      color: var(--color-text-tertiary);
+    }
+
+    .result .meta span {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* ── Error ──────────────────────────────────────── */
+    .error-msg {
+      display: none;
+      margin-top: var(--space-4);
+      padding: var(--space-4);
+      background: var(--color-accent-bg);
+      border: 1px solid #F0B8B8;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      color: var(--color-accent);
+      line-height: 1.5;
+    }
+
+    .error-msg.show { display: block; animation: fadeSlideIn 250ms ease; }
+
+    /* ── Actions ────────────────────────────────────── */
+    .actions {
+      display: flex;
+      gap: var(--space-2);
+      margin-top: var(--space-4);
+    }
+
+    .actions button {
+      flex: 1;
+      padding: var(--space-2) var(--space-3);
+      background: var(--color-bg-alt);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      transition: all var(--transition-fast);
+    }
+
+    .actions button:hover {
+      background: var(--color-bg-hover);
+      border-color: var(--color-border-hover);
+      color: var(--color-text);
+    }
+
+    .actions .copy-btn.copied {
+      background: var(--color-success-bg);
+      border-color: var(--color-success);
+      color: var(--color-success);
+    }
+
+    /* ── Privacy ────────────────────────────────────── */
+    .privacy {
+      margin-top: var(--space-4);
+      padding: var(--space-3) var(--space-4);
+      background: var(--color-bg-alt);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      font-size: 12px;
+      color: var(--color-text-tertiary);
+      line-height: 1.5;
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-2);
+    }
+
+    .privacy .ph {
+      flex-shrink: 0;
+      margin-top: 1px;
+      font-size: 14px;
+      color: var(--color-text-tertiary);
+    }
+
+    /* ── Footer ─────────────────────────────────────── */
+    .footer {
+      padding: 0 var(--space-6) var(--space-6);
+    }
+
+    .footer-link {
+      display: block;
+      width: 100%;
+      padding: var(--space-3);
+      background: var(--color-bg-alt);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--color-text-secondary);
+      text-decoration: none;
+      text-align: center;
+      transition: all var(--transition-fast);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+    }
+
+    .footer-link:hover {
+      background: var(--color-bg-hover);
+      border-color: var(--color-border-hover);
+      color: var(--color-text);
+    }
+
+    /* ── Toast ──────────────────────────────────────── */
+    .toast {
+      position: fixed;
+      bottom: var(--space-6);
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--color-text);
+      color: var(--color-text-inverse);
+      padding: var(--space-3) var(--space-5);
+      border-radius: var(--radius-md);
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 500;
+      z-index: 9999;
+      animation: toastIn 300ms ease;
+      max-width: 340px;
+      text-align: center;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .toast.out { animation: toastOut 200ms ease forwards; }
+
+    /* ── Animations ─────────────────────────────────── */
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateX(-50%) translateY(12px); }
+      to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+
+    @keyframes toastOut {
+      from { opacity: 1; transform: translateX(-50%) translateY(0); }
+      to   { opacity: 0; transform: translateX(-50%) translateY(12px); }
+    }
+
+    /* ── Responsive ─────────────────────────────────── */
+    @media (max-width: 480px) {
+      body {
+        padding: var(--space-4) var(--space-3) var(--space-10);
+      }
+      .container {
+        border-radius: var(--radius-md);
+      }
+      .header, .body-content, .footer {
+        padding-left: var(--space-5);
+        padding-right: var(--space-5);
+      }
+    }
+
+    @supports (-webkit-touch-callout: none) {
+      body {
+        padding-top: max(var(--space-10), constant(safe-area-inset-top));
+        padding-bottom: max(var(--space-16), constant(safe-area-inset-bottom));
+      }
+    }
+
+    ::selection {
+      background: var(--color-accent-bg);
+      color: var(--color-text);
+    }
+  </style>
 </head>
 <body>
-    <!-- Add to Home Screen Banner -->
-    <div id="addToHomeBanner">
-        <div class="banner-content">
-            <h3>🛡️ Install Breach Checker</h3>
-            <p>Add to your home screen for quick password security checks!</p>
-            <div class="banner-buttons">
-                <button id="showInstructions">Show Me How</button>
-                <button id="dismissBanner" class="dismiss-btn">Maybe Later</button>
-            </div>
-            <div class="ios-instructions" id="iosInstructions">
-                <strong>📋 How to install on iPhone:</strong>
-                <ol>
-                    <li>Tap the Share button <span class="share-icon"></span> at the bottom of Safari</li>
-                    <li>Scroll down and tap "Add to Home Screen"</li>
-                    <li>Tap "Add" in the top right corner</li>
-                    <li>Breach Checker will appear on your home screen!</li>
-                </ol>
-                <p><strong>✨ Benefits:</strong> Quick access, full screen, works offline!</p>
-            </div>
-        </div>
+
+  <div class="container">
+    <div class="header">
+      <div class="header-row">
+        <h1>
+          <i class="ph ph-shield-warning"></i>
+          Breach check
+        </h1>
+        <a href="https://hhhpraise.github.io/password-generator/" class="generator-link">
+          <i class="ph ph-arrow-left"></i>
+          Generator
+        </a>
+      </div>
+      <p class="subtitle">Check if your password has appeared in known data breaches. Uses k-anonymity so your password never leaves your device.</p>
     </div>
 
-    <div class="container">
-        <div class="header">
-            <h1>🛡️ Password Breach Checker</h1>
-            <p class="subtitle">Check if your password has appeared in known data breaches</p>
-            <a href="https://hhhpraise.github.io/password-generator/" class="securepass-link">
-                🔐 Need a secure password? Try SecurePass Generator
-            </a>
-        </div>
-
-        <div class="input-group">
-            <label for="passwordInput">Password to Check</label>
-            <input type="password" id="passwordInput" placeholder="Enter password to check for breaches">
-            <button type="button" class="toggle-password" onclick="togglePassword()">👁️</button>
-        </div>
-
-        <button class="check-btn" onclick="checkPassword()">
-            <span>🔍</span>
-            <span>Check Password Security</span>
+    <div class="body-content">
+      <div class="input-wrap">
+        <input type="password" id="passwordInput" placeholder="Password to check" autocomplete="off">
+        <button class="toggle-vis" id="toggleVis" title="Show password">
+          <i class="ph ph-eye"></i>
         </button>
+      </div>
 
-        <div id="loading" class="loading">
-            <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
-                <div style="width: 20px; height: 20px; border: 2px solid #e53e3e; border-top: 2px solid transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-                <span>🔍 Checking against breach databases...</span>
-            </div>
-        </div>
+      <button class="check-btn" id="checkBtn">
+        <i class="ph ph-magnifying-glass"></i>
+        Check for breaches
+      </button>
 
-        <div id="result" class="result"></div>
+      <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <div>Checking against known breaches&hellip;</div>
+      </div>
 
-        <div class="action-buttons">
-            <a href="https://hhhpraise.github.io/password-generator/" class="secondary-btn">
-                🔐 Generate Secure Password
-            </a>
-            <button class="secondary-btn clear-btn" onclick="clearInput()">
-                🗑️ Clear Input
-            </button>
-        </div>
+      <div class="result" id="result"></div>
 
-        <div class="privacy-note">
-            <span>🛡️</span>
-            <div>
-                <strong>Privacy Protected:</strong> Your password is hashed locally using SHA-1. Only the first 5 characters of the hash are sent to the API via HTTPS. Your actual password never leaves your device and cannot be reconstructed from the hash.
-            </div>
-        </div>
+      <div class="error-msg" id="error">
+        Unable to reach the breach database. Check your connection and try again.
+      </div>
 
-        <div class="education-section">
-            <div class="education-title">
-                <span>📚</span>
-                <span>Learn About Password Security</span>
-            </div>
+      <div class="actions">
+        <button class="copy-btn" id="copyBtn">
+          <i class="ph ph-copy"></i>
+          Copy password
+        </button>
+        <button id="clearBtn">
+          <i class="ph ph-eraser"></i>
+          Clear
+        </button>
+      </div>
 
-            <div class="education-item">
-                <h4>What are data breaches?</h4>
-                <p>Data breaches occur when hackers steal user information from websites or services. Even secure sites can be compromised, exposing user passwords. Major breaches have affected billions of accounts worldwide.</p>
-            </div>
-
-            <div class="education-item">
-                <h4>Why check breach databases?</h4>
-                <p>Attackers often try passwords from previous breaches first using automated tools. If your password appears in breaches, it's likely in their "common passwords" list and significantly easier to crack.</p>
-            </div>
-
-            <div class="education-item">
-                <h4>Famous breaches to know about</h4>
-                <p><strong>RockYou (2009):</strong> 32M passwords revealed common patterns like "123456"<br>
-                <strong>LinkedIn (2012):</strong> 117M professional accounts compromised<br>
-                <strong>Yahoo (2013-2014):</strong> 3B accounts affected in multiple breaches<br>
-                <strong>Have I Been Pwned:</strong> Troy Hunt's service tracks 12B+ breached accounts</p>
-            </div>
-
-            <div class="education-item">
-                <h4>How to create secure passwords</h4>
-                <p>Use long, unique passwords for each account. Consider passphrases like "Coffee-Mountain-Purple-42" or use our SecurePass generator for cryptographically secure passwords. Enable 2FA whenever possible.</p>
-            </div>
-
-            <div class="education-item">
-                <h4>What to do if your password is breached</h4>
-                <p><strong>Immediately:</strong> Change the password on all accounts using it<br>
-                <strong>Enable 2FA:</strong> Add extra security layers<br>
-                <strong>Use unique passwords:</strong> Never reuse passwords across accounts<br>
-                <strong>Monitor accounts:</strong> Watch for suspicious activity</p>
-            </div>
-        </div>
+      <div class="privacy">
+        <i class="ph ph-shield-check"></i>
+        <span>Your password is hashed locally using SHA-1. Only the first 5 characters of the hash are sent over HTTPS. The full password never leaves your device.</span>
+      </div>
     </div>
 
-    <script>
-        let passwordVisible = false;
+    <div class="footer">
+      <a href="https://hhhpraise.github.io/password-generator/" class="footer-link">
+        <i class="ph ph-lock-key"></i>
+        Need a secure password? Open SecurePass Generator
+      </a>
+    </div>
+  </div>
 
-        // Initialize app
-        function initApp() {
-            setupEventListeners();
-            checkForMessageFromSecurePass();
-            setTimeout(showAddToHomeBanner, 3000);
-            registerServiceWorker();
+  <script>
+    (function () {
+      'use strict';
+
+      let passwordVisible = false;
+      let isChecking = false;
+
+      const $ = function (sel) { return document.querySelector(sel); };
+
+      const passwordInput = $('#passwordInput');
+      const checkBtn      = $('#checkBtn');
+      const resultEl      = $('#result');
+      const loadingEl     = $('#loading');
+      const errorEl       = $('#error');
+      const toggleVisBtn  = $('#toggleVis');
+      const copyBtn       = $('#copyBtn');
+      const clearBtn      = $('#clearBtn');
+
+      // ── Toggle visibility ─────────────────────────────
+      function toggleVisibility() {
+        passwordVisible = !passwordVisible;
+        passwordInput.type = passwordVisible ? 'text' : 'password';
+        var icon = toggleVisBtn.querySelector('i');
+        icon.className = passwordVisible ? 'ph ph-eye-slash' : 'ph ph-eye';
+        passwordInput.focus();
+      }
+
+      // ── Hide states ───────────────────────────────────
+      function hideStates() {
+        resultEl.classList.remove('show');
+        loadingEl.classList.remove('show');
+        errorEl.classList.remove('show');
+      }
+
+      // ── Toast ─────────────────────────────────────────
+      function toast(message, duration) {
+        if (!duration) duration = 2500;
+        var el = document.createElement('div');
+        el.className = 'toast';
+        el.textContent = message;
+        document.body.appendChild(el);
+        setTimeout(function () {
+          el.classList.add('out');
+          setTimeout(function () { el.remove(); }, 200);
+        }, duration);
+      }
+
+      // ── Copy ──────────────────────────────────────────
+      function copyPassword() {
+        var pwd = passwordInput.value;
+        if (!pwd) return;
+        try {
+          navigator.clipboard.writeText(pwd);
+        } catch (e) {
+          var ta = document.createElement('textarea');
+          ta.value = pwd;
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+        }
+        copyBtn.innerHTML = '<i class="ph ph-check"></i> Copied';
+        copyBtn.classList.add('copied');
+        setTimeout(function () {
+          copyBtn.innerHTML = '<i class="ph ph-copy"></i> Copy password';
+          copyBtn.classList.remove('copied');
+        }, 2500);
+      }
+
+      // ── Clear ─────────────────────────────────────────
+      function clearInput() {
+        passwordInput.value = '';
+        hideStates();
+        passwordInput.focus();
+      }
+
+      // ── Breach check ──────────────────────────────────
+      async function runCheck() {
+        var password = passwordInput.value.trim();
+        if (!password) {
+          toast('Enter a password to check');
+          passwordInput.focus();
+          return;
         }
 
-        // Service Worker registration
-        function registerServiceWorker() {
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('sw.js')
-                    .catch(() => console.log('SW registration failed'));
+        if (isChecking) return;
+        isChecking = true;
+
+        hideStates();
+        loadingEl.classList.add('show');
+        checkBtn.disabled = true;
+
+        try {
+          var encoder = new TextEncoder();
+          var data = encoder.encode(password);
+          var hashBuffer = await crypto.subtle.digest('SHA-1', data);
+          var hashArray = Array.from(new Uint8Array(hashBuffer));
+          var hashHex = hashArray.map(function (b) { return b.toString(16).padStart(2, '0'); }).join('').toUpperCase();
+
+          var prefix = hashHex.slice(0, 5);
+          var suffix = hashHex.slice(5);
+
+          var response = await fetch('https://api.pwnedpasswords.com/range/' + prefix);
+          if (!response.ok) throw new Error('API request failed');
+
+          var text = await response.text();
+          var lines = text.split('\n');
+          var breachCount = 0;
+
+          for (var i = 0; i < lines.length; i++) {
+            var parts = lines[i].trim().split(':');
+            if (parts[0] === suffix) {
+              breachCount = parseInt(parts[1], 10);
+              break;
             }
+          }
+
+          displayResult(breachCount, password.length);
+        } catch (e) {
+          loadingEl.classList.remove('show');
+          errorEl.classList.add('show');
+        } finally {
+          checkBtn.disabled = false;
+          isChecking = false;
+        }
+      }
+
+      // ── Display result ────────────────────────────────
+      function displayResult(breachCount, passwordLength) {
+        loadingEl.classList.remove('show');
+        errorEl.classList.remove('show');
+
+        var level, icon, statusText, detail;
+
+        if (breachCount === 0) {
+          level = 'safe';
+          icon = 'check-circle';
+          statusText = 'Not found in any known breach';
+          detail = 'This ' + passwordLength + '-character password hasn\'t appeared in major breach databases. Still, make sure it\'s unique to this account.';
+        } else if (breachCount < 10) {
+          level = 'low';
+          icon = 'warning';
+          statusText = 'Found in ' + breachCount + ' breach' + (breachCount > 1 ? 'es' : '');
+          detail = 'This password has been exposed a few times. Consider using a different one, especially for important accounts.';
+        } else if (breachCount < 100) {
+          level = 'medium';
+          icon = 'warning-octagon';
+          statusText = 'Found in ' + breachCount + ' breaches';
+          detail = 'This password is known to attackers and appears in common password lists. Change it immediately and never reuse it.';
+        } else {
+          level = 'high';
+          icon = 'skull';
+          statusText = 'Found in ' + breachCount.toLocaleString() + ' breaches';
+          detail = 'This is a widely compromised password. Attackers try it first in automated attacks. Never use this for any account.';
         }
 
-        // Set up event listeners
-        function setupEventListeners() {
-            document.getElementById('passwordInput').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    checkPassword();
-                }
-            });
+        resultEl.className = 'result ' + level + ' show';
+        resultEl.innerHTML =
+          '<div class="status">' +
+            '<i class="ph ph-' + icon + '"></i>' +
+            statusText +
+          '</div>' +
+          '<div class="detail">' + detail + '</div>' +
+          (breachCount > 0
+            ? '<div class="meta">' +
+                '<span><i class="ph ph-database"></i> ' + breachCount.toLocaleString() + ' times</span>' +
+                '<span><i class="ph ph-gauge"></i> ' + (breachCount < 10 ? 'Low' : breachCount < 100 ? 'Medium' : 'High') + ' risk</span>' +
+              '</div>'
+            : '');
+      }
 
-            document.getElementById('dismissBanner').addEventListener('click', dismissBanner);
-            document.getElementById('showInstructions').addEventListener('click', showInstallInstructions);
-        }
-
-        // Check for messages from SecurePass
-        function checkForMessageFromSecurePass() {
-            window.addEventListener('message', function(event) {
-                if (event.data && event.data.type === 'CHECK_PASSWORD') {
-                    const password = event.data.password;
-                    if (password) {
-                        document.getElementById('passwordInput').value = password;
-                        showMessage('Password received from SecurePass! Click check to verify.');
-                        document.getElementById('passwordInput').classList.add('pulse');
-                        setTimeout(() => {
-                            document.getElementById('passwordInput').classList.remove('pulse');
-                        }, 1000);
-                    }
-                }
-            });
-
-            // Also check URL parameters for direct links
-            const urlParams = new URLSearchParams(window.location.search);
-            const password = urlParams.get('password');
+      // ── Auto-check from URL hash ─────────────────────
+      function checkURLHash() {
+        var hash = window.location.hash;
+        if (hash && hash.startsWith('#p=')) {
+          var encoded = hash.slice(3);
+          try {
+            var password = decodeURIComponent(encoded);
             if (password) {
-                document.getElementById('passwordInput').value = decodeURIComponent(password);
-                showMessage('Password pre-filled from URL parameter');
+              passwordInput.value = password;
+              // Small delay for page to settle, then auto-check
+              setTimeout(runCheck, 400);
+              // Clean URL
+              history.replaceState(null, '', window.location.pathname);
             }
+          } catch (e) { /* ignore bad hash */ }
         }
+      }
 
-        function togglePassword() {
-            const input = document.getElementById('passwordInput');
-            const button = document.querySelector('.toggle-password');
+      // ── Event listeners ───────────────────────────────
+      function init() {
+        toggleVisBtn.addEventListener('click', toggleVisibility);
+        checkBtn.addEventListener('click', runCheck);
+        copyBtn.addEventListener('click', copyPassword);
+        clearBtn.addEventListener('click', clearInput);
 
-            if (passwordVisible) {
-                input.type = 'password';
-                button.textContent = '👁️';
-                passwordVisible = false;
-            } else {
-                input.type = 'text';
-                button.textContent = '🙈';
-                passwordVisible = true;
-            }
-        }
-
-        function clearInput() {
-            document.getElementById('passwordInput').value = '';
-            document.getElementById('result').classList.remove('show');
-            document.getElementById('passwordInput').focus();
-            showMessage('Input cleared');
-        }
-
-        async function checkPassword() {
-            const password = document.getElementById('passwordInput').value;
-            const loading = document.getElementById('loading');
-            const result = document.getElementById('result');
-            const button = document.querySelector('.check-btn');
-
-            if (!password) {
-                showMessage('Please enter a password to check');
-                document.getElementById('passwordInput').focus();
-                return;
-            }
-
-            // Show loading state
-            loading.classList.add('show');
-            result.classList.remove('show');
-            button.disabled = true;
-
-            try {
-                const breachCount = await checkPasswordBreach(password);
-                displayResult(breachCount, password.length);
-            } catch (error) {
-                displayError();
-            } finally {
-                loading.classList.remove('show');
-                button.disabled = false;
-            }
-        }
-
-        async function checkPasswordBreach(password) {
-            try {
-                // Hash password client-side for privacy
-                const encoder = new TextEncoder();
-                const data = encoder.encode(password);
-                const hashBuffer = await crypto.subtle.digest('SHA-1', data);
-                const hashArray = Array.from(new Uint8Array(hashBuffer));
-                const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
-
-                const prefix = hashHex.slice(0, 5);
-                const suffix = hashHex.slice(5);
-
-                const response = await fetch(`https://api.pwnedpasswords.com/range/${prefix}`);
-                if (!response.ok) {
-                    throw new Error('API request failed');
-                }
-
-                const text = await response.text();
-                const lines = text.split('\n');
-
-                for (let line of lines) {
-                    const [hashSuffix, count] = line.trim().split(':');
-                    if (hashSuffix === suffix) {
-                        return parseInt(count);
-                    }
-                }
-                return 0;
-            } catch (error) {
-                console.error('Breach check error:', error);
-                throw error;
-            }
-        }
-
-        function displayResult(breachCount, passwordLength) {
-            const result = document.getElementById('result');
-            let context;
-
-            if (breachCount === 0) {
-                context = {
-                    level: 'safe',
-                    icon: '✅',
-                    message: 'Excellent! This password hasn\'t appeared in known data breaches.',
-                    education: `This password (${passwordLength} characters) hasn't been found in major breach databases. However, ensure it's unique to this account and consider using our SecurePass generator for maximum security.`,
-                };
-            } else if (breachCount < 10) {
-                context = {
-                    level: 'low-risk',
-                    icon: '⚠️',
-                    message: `This password appeared in ${breachCount} breach${breachCount > 1 ? 'es' : ''}.`,
-                    education: 'While not widely compromised, this password has been exposed. Consider using a completely different password, especially for important accounts like banking or email.',
-                };
-            } else if (breachCount < 100) {
-                context = {
-                    level: 'medium-risk',
-                    icon: '🚨',
-                    message: `This password appeared in ${breachCount} breaches.`,
-                    education: 'This password is moderately well-known to attackers and appears in their common password lists. You should definitely change it immediately and never reuse it.',
-                };
-            } else {
-                context = {
-                    level: 'high-risk',
-                    icon: '💀',
-                    message: `This password appeared in ${breachCount.toLocaleString()} breaches!`,
-                    education: 'This is a very common password that attackers will try first in automated attacks. Never use this password for any account. Consider using our SecurePass generator for unique, secure passwords.',
-                };
-            }
-
-            result.className = `result ${context.level} show`;
-            result.innerHTML = `
-                <div class="result-message">
-                    <span>${context.icon}</span>
-                    <span>${context.message}</span>
-                </div>
-                <div class="result-education">${context.education}</div>
-                ${breachCount > 0 ? `
-                    <div class="stats">
-                        <div class="stat-item">
-                            <div class="stat-number">${breachCount.toLocaleString()}</div>
-                            <div class="stat-label">Times Breached</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number">${getRiskLevel(breachCount)}</div>
-                            <div class="stat-label">Risk Level</div>
-                        </div>
-                    </div>
-                ` : ''}
-            `;
-        }
-
-        function getRiskLevel(breachCount) {
-            if (breachCount === 0) return 'Safe';
-            if (breachCount < 10) return 'Low';
-            if (breachCount < 100) return 'Medium';
-            return 'High';
-        }
-
-        function displayError() {
-            const result = document.getElementById('result');
-            result.className = 'result medium-risk show';
-            result.innerHTML = `
-                <div class="result-message">
-                    <span>❌</span>
-                    <span>Error checking password</span>
-                </div>
-                <div class="result-education">Unable to connect to the breach database. Please check your internet connection and try again. The service may be temporarily unavailable.</div>
-            `;
-        }
-
-        // Add to Home Screen functionality
-        function showAddToHomeBanner() {
-            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-            const isStandalone = window.navigator.standalone;
-            const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
-
-            if (isIOS && isSafari && !isStandalone) {
-                const dismissed = localStorage.getItem('breachCheckerHomeDismissed');
-                if (!dismissed) {
-                    document.getElementById('addToHomeBanner').style.display = 'block';
-                }
-            }
-        }
-
-        function showInstallInstructions() {
-            const instructions = document.getElementById('iosInstructions');
-            instructions.classList.add('show');
-            document.getElementById('showInstructions').style.display = 'none';
-        }
-
-        function dismissBanner() {
-            document.getElementById('addToHomeBanner').style.display = 'none';
-            try {
-                localStorage.setItem('breachCheckerHomeDismissed', 'true');
-            } catch (e) {
-                // Storage not available
-            }
-        }
-
-        // Utility functions
-        function showMessage(message) {
-            const messageEl = document.createElement('div');
-            messageEl.textContent = message;
-            messageEl.style.cssText = `
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background: rgba(0, 0, 0, 0.9);
-                color: white;
-                padding: 15px 25px;
-                border-radius: 25px;
-                z-index: 9999;
-                font-size: 16px;
-                font-weight: 500;
-                max-width: 320px;
-                text-align: center;
-                border: 2px solid #e53e3e;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            `;
-
-            document.body.appendChild(messageEl);
-            setTimeout(() => {
-                if (document.body.contains(messageEl)) {
-                    document.body.removeChild(messageEl);
-                }
-            }, 3000);
-        }
-
-        // Global functions
-        window.togglePassword = togglePassword;
-        window.checkPassword = checkPassword;
-        window.clearInput = clearInput;
-
-        // Initialize app when loaded
-        document.addEventListener('DOMContentLoaded', initApp);
-
-        // Handle visibility change for mobile
-        document.addEventListener('visibilitychange', function() {
-            if (!document.hidden) {
-                // App became visible, check for any messages
-                checkForMessageFromSecurePass();
-            }
+        passwordInput.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter') runCheck();
         });
 
-        // Add spin animation for loading spinner
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes spin {
-                0% { transform: rotate(0deg); }
-                100% { transform: rotate(360deg); }
-            }
-        `;
-        document.head.appendChild(style);
+        // Check URL hash on load
+        checkURLHash();
+      }
 
-        // Handle back button for mobile
-        window.addEventListener('popstate', function(event) {
-            // Clean up any active states
-            document.getElementById('result').classList.remove('show');
-            document.getElementById('loading').classList.remove('show');
-        });
-
-        // Performance optimization: Preload SecurePass link
-        const link = document.createElement('link');
-        link.rel = 'prefetch';
-        link.href = 'index.html';
-        document.head.appendChild(link);
-    </script>
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+    })();
+  </script>
 </body>
 </html>
